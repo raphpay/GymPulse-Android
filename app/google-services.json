@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1070625704385",
+    "project_id": "gympulse-7ce1b",
+    "storage_bucket": "gympulse-7ce1b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1070625704385:android:336e25d47c2dcbe6c28740",
+        "android_client_info": {
+          "package_name": "fr.twinpaw.gympulse"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9SNYw9xZ81QpB3MKjs2AA2_QR-8qLh5U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

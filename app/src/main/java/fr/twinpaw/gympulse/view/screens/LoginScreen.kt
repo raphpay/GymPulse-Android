@@ -1,5 +1,6 @@
 package fr.twinpaw.gympulse.view.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,11 +21,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import fr.twinpaw.gympulse.R
+import fr.twinpaw.gympulse.model.services.AuthenticationService
+import fr.twinpaw.gympulse.model.services.FirestoreService
 import fr.twinpaw.gympulse.view.components.PasswordTextField
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope as rememberCoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,6 +40,31 @@ fun LoginScreen(goToMain: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisibility by remember { mutableStateOf(false) }
+
+    val scope = rememberCoroutineScope()
+
+    fun loginButtonTapped() {
+        scope.launch {
+            try {
+                val isAvailable = FirestoreService.shared.checkUserAvailability(email = email)
+                if (isAvailable) {
+                    FirestoreService.shared.createUser(email = email)
+                    val user = AuthenticationService.shared.createUser(email = email, password = password)
+                    Log.d("Log_in_button_onclick_success", "${user?.email}")
+                    // TODO: Save user in memory
+                    goToMain()
+                } else {
+                    val user = AuthenticationService.shared.signIn(email = email, password = password)
+                    Log.d("Log_in_button_onclick_success", "${user?.email}")
+                    // TODO: Save user in memory
+                    goToMain()
+                }
+            } catch (error: Exception) {
+                // TODO: Show a toast for the error
+                Log.d("Log_in_button_onclick_error", error.localizedMessage)
+            }
+        }
+    }
 
     Box {
         Image(
@@ -59,7 +92,7 @@ fun LoginScreen(goToMain: () -> Unit) {
                 changeVisibility = { passwordVisibility = !passwordVisibility }
             )
 
-            Button(onClick = goToMain) {
+            Button(onClick = {loginButtonTapped()}) {
                 Text(stringResource(R.string.log_in_text_button))
             }
         }
