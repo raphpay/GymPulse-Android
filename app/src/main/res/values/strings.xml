@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">GymPulse</string>
+    <string name="app_background_description">app_background_description</string>
+    <string name="error_password_no_match">Error Password No Match</string>
+    <string name="warning_password_level">Warning Password\n</string>
+    <string name="log_in_text_button">Log in</string>
 </resources>
