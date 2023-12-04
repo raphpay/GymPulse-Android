@@ -1,4 +1,4 @@
-package fr.twinpaw.gympulse
+package fr.twinpaw.gympulse.view.components
 
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,6 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import fr.twinpaw.gympulse.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
