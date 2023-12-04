@@ -34,7 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen() {
+fun LoginScreen(goToMain: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisibility by remember { mutableStateOf(false) }
@@ -65,7 +65,7 @@ fun LoginScreen() {
                 changeVisibility = { passwordVisibility = !passwordVisibility }
             )
 
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = goToMain) {
                 Text(stringResource(R.string.log_in_text_button))
             }
         }
@@ -75,5 +75,5 @@ fun LoginScreen() {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    LoginScreen()
+    LoginScreen(goToMain = {})
 }
