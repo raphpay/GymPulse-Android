@@ -15,6 +15,6 @@ fun NavigationHost() {
         composable("login") {
             LoginScreen(goToMain = { navController.navigate("main") })
         }
-        composable("main") { MainScreen() }
+        composable("main") { MainScreen(goBackToLogin = { navController.popBackStack() }) }
     }
 }

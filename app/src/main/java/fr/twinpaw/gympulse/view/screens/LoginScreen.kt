@@ -38,7 +38,7 @@ import androidx.compose.runtime.rememberCoroutineScope as rememberCoroutineScope
 @Composable
 fun LoginScreen(goToMain: () -> Unit) {
     var email by remember { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
     var passwordVisibility by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
@@ -101,6 +101,6 @@ fun LoginScreen(goToMain: () -> Unit) {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun LoginScreenPreview() {
     LoginScreen(goToMain = {})
 }
