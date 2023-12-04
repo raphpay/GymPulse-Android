@@ -4,10 +4,18 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import fr.twinpaw.gympulse.model.dataProvider.AuthDataProvider
 
 @Composable
-fun MainScreen(goBackToLogin: () -> Unit) {
-    Button(onClick = goBackToLogin) {
+fun MainScreen(
+    authDataProvider: AuthDataProvider,
+    goBackToLogin: () -> Unit
+) {
+    Button(onClick = {
+        authDataProvider.isLoggedIn.value = false
+        authDataProvider.currentUser.value = null
+        goBackToLogin()
+    }) {
         Text("Log out")
     }
 }
@@ -15,5 +23,8 @@ fun MainScreen(goBackToLogin: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    MainScreen(goBackToLogin = {})
+    MainScreen(
+        authDataProvider = AuthDataProvider(),
+        goBackToLogin = {}
+    )
 }

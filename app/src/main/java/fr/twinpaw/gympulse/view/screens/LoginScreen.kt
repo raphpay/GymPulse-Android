@@ -25,7 +25,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.firebase.auth.FirebaseUser
 import fr.twinpaw.gympulse.R
+import fr.twinpaw.gympulse.model.dataProvider.AuthDataProvider
 import fr.twinpaw.gympulse.model.services.AuthenticationService
 import fr.twinpaw.gympulse.model.services.FirestoreService
 import fr.twinpaw.gympulse.view.components.PasswordTextField
@@ -36,12 +38,26 @@ import androidx.compose.runtime.rememberCoroutineScope as rememberCoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(goToMain: () -> Unit) {
+fun LoginScreen(
+    authDataProvider: AuthDataProvider,
+    goToMain: () -> Unit
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisibility by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
+
+    fun handleResult(user: FirebaseUser?) {
+        if (user !== null) {
+            Log.d("Log_in_button_onclick_success", "${user?.email}")
+            authDataProvider.currentUser.value = user
+            goToMain()
+        } else {
+            // TODO: Show a toast for the error
+            Log.d("Log_in_button_onclick_error", "No user found")
+        }
+    }
 
     fun loginButtonTapped() {
         scope.launch {
@@ -50,14 +66,10 @@ fun LoginScreen(goToMain: () -> Unit) {
                 if (isAvailable) {
                     FirestoreService.shared.createUser(email = email)
                     val user = AuthenticationService.shared.createUser(email = email, password = password)
-                    Log.d("Log_in_button_onclick_success", "${user?.email}")
-                    // TODO: Save user in memory
-                    goToMain()
+                    handleResult(user)
                 } else {
                     val user = AuthenticationService.shared.signIn(email = email, password = password)
-                    Log.d("Log_in_button_onclick_success", "${user?.email}")
-                    // TODO: Save user in memory
-                    goToMain()
+                    handleResult(user)
                 }
             } catch (error: Exception) {
                 // TODO: Show a toast for the error
@@ -102,5 +114,5 @@ fun LoginScreen(goToMain: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen(goToMain = {})
+    LoginScreen(authDataProvider = AuthDataProvider(), goToMain = {})
 }
