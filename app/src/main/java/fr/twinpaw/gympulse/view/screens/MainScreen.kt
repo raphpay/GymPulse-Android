@@ -5,6 +5,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import fr.twinpaw.gympulse.model.dataProvider.AuthDataProvider
+import fr.twinpaw.gympulse.model.services.AuthenticationService
 
 @Composable
 fun MainScreen(
@@ -12,8 +13,8 @@ fun MainScreen(
     goBackToLogin: () -> Unit
 ) {
     Button(onClick = {
-        authDataProvider.isLoggedIn.value = false
-        authDataProvider.currentUser.value = null
+        AuthenticationService.shared.signOut()
+        authDataProvider.logout()
         goBackToLogin()
     }) {
         Text("Log out")

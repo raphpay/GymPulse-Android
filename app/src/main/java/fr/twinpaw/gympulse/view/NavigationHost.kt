@@ -16,7 +16,7 @@ fun NavigationHost(authDataProvider: AuthDataProvider) {
 
     NavHost(navController = navController, startDestination = "start") {
         composable("start") {
-            val isLoggedIn = authDataProvider.isLoggedIn.value
+            val isLoggedIn = authDataProvider.isLoggedIn
             if (isLoggedIn) {
                 MainScreen(
                     authDataProvider = authDataProvider,

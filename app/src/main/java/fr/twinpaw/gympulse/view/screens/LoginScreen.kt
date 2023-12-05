@@ -51,7 +51,7 @@ fun LoginScreen(
     fun handleResult(user: FirebaseUser?) {
         if (user !== null) {
             Log.d("Log_in_button_onclick_success", "${user?.email}")
-            authDataProvider.currentUser.value = user
+            authDataProvider.currentUser = user
             goToMain()
         } else {
             // TODO: Show a toast for the error
