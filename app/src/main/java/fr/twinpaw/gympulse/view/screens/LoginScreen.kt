@@ -1,39 +1,30 @@
 package fr.twinpaw.gympulse.view.screens
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.google.firebase.auth.FirebaseUser
+import androidx.compose.ui.unit.dp
 import fr.twinpaw.gympulse.R
 import fr.twinpaw.gympulse.model.dataProvider.AuthDataProvider
-import fr.twinpaw.gympulse.model.services.AuthenticationService
-import fr.twinpaw.gympulse.model.services.FirestoreService
 import fr.twinpaw.gympulse.view.components.PasswordTextField
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope as rememberCoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,41 +33,8 @@ fun LoginScreen(
     authDataProvider: AuthDataProvider,
     goToMain: () -> Unit
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var passwordVisibility by remember { mutableStateOf(false) }
-
     val scope = rememberCoroutineScope()
-
-    fun handleResult(user: FirebaseUser?) {
-        if (user !== null) {
-            Log.d("Log_in_button_onclick_success", "${user?.email}")
-            authDataProvider.currentUser = user
-            goToMain()
-        } else {
-            // TODO: Show a toast for the error
-            Log.d("Log_in_button_onclick_error", "No user found")
-        }
-    }
-
-    fun loginButtonTapped() {
-        scope.launch {
-            try {
-                val isAvailable = FirestoreService.shared.checkUserAvailability(email = email)
-                if (isAvailable) {
-                    FirestoreService.shared.createUser(email = email)
-                    val user = AuthenticationService.shared.createUser(email = email, password = password)
-                    handleResult(user)
-                } else {
-                    val user = AuthenticationService.shared.signIn(email = email, password = password)
-                    handleResult(user)
-                }
-            } catch (error: Exception) {
-                // TODO: Show a toast for the error
-                Log.d("Log_in_button_onclick_error", error.localizedMessage)
-            }
-        }
-    }
+    var viewModel = remember { LoginViewModel() }
 
     Box {
         Image(
@@ -91,22 +49,29 @@ fun LoginScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
+                value = viewModel.email,
+                onValueChange = { viewModel.email = it },
                 label = { Text("Email")},
                 textStyle = LocalTextStyle.current.copy(color = Color.Black)
             )
 
             PasswordTextField(
-                text = password,
-                isVisible = passwordVisibility,
-                onTextChange = { password = it },
-                changeVisibility = { passwordVisibility = !passwordVisibility }
+                text = viewModel.password,
+                isVisible = viewModel.passwordVisibility,
+                onTextChange = { viewModel.password = it },
+                changeVisibility = { viewModel.passwordVisibility = !viewModel.passwordVisibility }
             )
 
-            Button(onClick = {loginButtonTapped()}) {
+            Button(onClick = {
+                viewModel.login(
+                    scope = scope,
+                    authDataProvider = authDataProvider,
+                    goToMain = goToMain
+                )
+            }) {
                 Text(stringResource(R.string.log_in_text_button))
             }
+            Spacer(modifier = Modifier.height(300.dp))
         }
     }
 }
