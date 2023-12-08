@@ -4,4 +4,5 @@
     <string name="error_password_no_match">Error Password No Match</string>
     <string name="warning_password_level">Warning Password\n</string>
     <string name="log_in_text_button">Log in</string>
+    <string name="dumbbell_icon">dumbbell_icon</string>
 </resources>
