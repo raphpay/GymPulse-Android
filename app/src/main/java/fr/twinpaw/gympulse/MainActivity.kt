@@ -6,41 +6,39 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.firebase.FirebaseApp
+import fr.twinpaw.gympulse.model.dataProvider.AuthDataProvider
 import fr.twinpaw.gympulse.ui.theme.GymPulseTheme
+import fr.twinpaw.gympulse.view.NavigationHost
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
         setContent {
-            GymPulseTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("Android")
-                }
-            }
+            GymPulseApp()
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun GymPulseApp() {
+    val authDataProvider: AuthDataProvider = viewModel()
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
+    // Check user status when the app is launched
+    authDataProvider.checkUserStatus()
+
     GymPulseTheme {
-        Greeting("Android")
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            // Use your content here
+            NavigationHost(authDataProvider = authDataProvider)
+        }
     }
 }
