@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import fr.twinpaw.gympulse.model.dataProvider.AuthDataProvider
+import fr.twinpaw.gympulse.view.components.DurationPicker
 import java.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
