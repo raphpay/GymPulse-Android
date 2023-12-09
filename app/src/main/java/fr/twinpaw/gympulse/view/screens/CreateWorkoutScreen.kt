@@ -1,6 +1,8 @@
 package fr.twinpaw.gympulse.view.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import fr.twinpaw.gympulse.R
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -29,7 +32,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -51,8 +57,15 @@ fun CreateWorkoutScreen() {
     var workoutName: String by remember { mutableStateOf("") }
     var minutes: Int by remember { mutableIntStateOf(2) }
     var seconds: Int by remember { mutableIntStateOf(30) }
+    var showExerciseAlert by remember { mutableStateOf(false) }
+    var alertWidth by remember { mutableStateOf(350) }
+    var alertHeight by remember { mutableStateOf(350) }
 
-    Box {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    )
+    {
         Image(
             painter = painterResource(id = R.drawable.app_background),
             contentDescription = stringResource(id = R.string.app_background_description),
@@ -80,6 +93,50 @@ fun CreateWorkoutScreen() {
                 minutesChanged = { minutes = it },
                 secondsChanged = { seconds = it },
             )
+
+            Button(onClick = { showExerciseAlert = true }) {
+                Text("Add exercise")
+            }
+        }
+
+        if (showExerciseAlert) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.6f))
+                    .padding(18.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                AddExerciseView(
+                    showExerciseAlert = showExerciseAlert,
+                    alertWidth = alertWidth,
+                    alertHeight = alertHeight,
+                    addExercise = { showExerciseAlert = false }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun AddExerciseView(
+    showExerciseAlert: Boolean,
+    alertWidth: Int,
+    alertHeight: Int,
+    addExercise: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(10))
+            .background(Color.White)
+            .height(alertHeight.dp)
+            .width(alertWidth.dp)
+            .padding(16.dp)
+    ) {
+        Column() {
+            Button(onClick = addExercise) {
+                Text("Add Exercise")
+            }
         }
     }
 }
